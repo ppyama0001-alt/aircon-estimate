@@ -3,71 +3,177 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>エアコン見積アプリ</title>
+<title>エアコン見積アプリ Ver2</title>
 
 <style>
 body{
-font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-margin:20px;
-background:#f4f7fb;
+font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+background:#eef3f8;
+margin:0;
+padding:16px;
+color:#222;
 }
 
-h1{
-font-size:28px;
+.container{
+max-width:900px;
+margin:auto;
 }
 
 .card{
 background:white;
+border-radius:18px;
 padding:20px;
-border-radius:14px;
-box-shadow:0 2px 10px rgba(0,0,0,.08);
-max-width:700px;
-margin:auto;
+margin-bottom:16px;
+box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+h1{
+margin-top:0;
+font-size:34px;
+color:#004b8d;
+}
+
+h2{
+font-size:22px;
+border-left:6px solid #004b8d;
+padding-left:10px;
 }
 
 label{
 display:block;
-margin-top:14px;
 font-weight:bold;
+margin-top:14px;
+margin-bottom:6px;
 }
 
 input,select{
 width:100%;
-padding:12px;
-font-size:18px;
-margin-top:6px;
+padding:14px;
+font-size:20px;
+border-radius:12px;
+border:1px solid #cfd7df;
 box-sizing:border-box;
-border-radius:10px;
-border:1px solid #ccc;
 }
 
-.total{
-margin-top:20px;
-padding:20px;
-background:#fff2cf;
-border:2px solid #e0b34f;
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+}
+
+.option{
+display:grid;
+grid-template-columns:40px 1fr 140px;
+align-items:center;
+gap:10px;
+padding:12px;
+border:1px solid #dde5ed;
 border-radius:14px;
-font-size:32px;
-font-weight:bold;
+margin-bottom:10px;
+}
+
+.option input[type=checkbox]{
+width:28px;
+height:28px;
+}
+
+.option input[type=number]{
+text-align:right;
+}
+
+.totalBox{
+background:#fff1cc;
+border:3px solid #e0b34f;
+border-radius:18px;
+padding:22px;
 text-align:center;
 }
 
-.note{
-margin-top:12px;
+.totalTitle{
+font-size:22px;
+font-weight:bold;
+}
+
+.totalAmount{
+font-size:52px;
+font-weight:900;
+margin-top:8px;
+}
+
+.sub{
 font-size:14px;
 color:#666;
 line-height:1.6;
+margin-top:10px;
+}
+
+.resultLine{
+display:flex;
+justify-content:space-between;
+padding:10px 0;
+border-bottom:1px dotted #bbb;
+font-size:20px;
+}
+
+.resultLine b{
+white-space:nowrap;
+}
+
+button{
+width:100%;
+padding:16px;
+font-size:22px;
+font-weight:bold;
+border:none;
+border-radius:14px;
+background:#004b8d;
+color:white;
+margin-top:16px;
+}
+
+@media(max-width:700px){
+.row{
+grid-template-columns:1fr;
+}
+
+.option{
+grid-template-columns:34px 1fr 120px;
+}
+
+.totalAmount{
+font-size:40px;
+}
 }
 </style>
 </head>
 
 <body>
 
+<div class="container">
+
 <div class="card">
 
-<h1>エアコン見積アプリ</h1>
+<h1>エアコン見積アプリ Ver.2</h1>
 
+<div class="row">
+
+<div>
+<label>お客様名</label>
+<input type="text" placeholder="例：山田様">
+</div>
+
+<div>
+<label>担当者</label>
+<input type="text" placeholder="例：坂田">
+</div>
+
+</div>
+
+<div class="row">
+
+<div>
 <label>受注月</label>
+
 <select id="month" onchange="calc()">
 <option value="1">1月</option>
 <option value="2">2月</option>
@@ -82,23 +188,121 @@ line-height:1.6;
 <option value="11">11月</option>
 <option value="12">12月</option>
 </select>
+</div>
+
+<div>
+<label>型番</label>
+<input type="text" placeholder="例：CS-EX405D2">
+</div>
+
+</div>
 
 <label>本体価格（税込）</label>
 <input type="number" id="body" value="0" oninput="calc()">
 
-<label>追加工事費</label>
-<input type="number" id="option" value="0" oninput="calc()">
-
 <label>値引き</label>
 <input type="number" id="discount" value="0" oninput="calc()">
 
-<div class="note">
+<div class="sub">
 標準工事費：29,500円（配管4mまで）<br>
 受注月が6〜8月の場合、夏期暑熱対策費5,000円を自動加算
 </div>
 
-<div class="total" id="total">
-29,500円
+</div>
+
+<div class="card">
+
+<h2>追加工事</h2>
+
+<div class="option">
+<input type="checkbox" id="removeCheck" onchange="calc()">
+<div>既存取り外し</div>
+<input type="number" id="removePrice" value="5500" oninput="calc()">
+</div>
+
+<div class="option">
+<input type="checkbox" id="recycleCheck" onchange="calc()">
+<div>リサイクル</div>
+<input type="number" id="recyclePrice" value="4290" oninput="calc()">
+</div>
+
+<div class="option">
+<input type="checkbox" id="coverCheck" onchange="calc()">
+<div>化粧カバー</div>
+<input type="number" id="coverPrice" value="8800" oninput="calc()">
+</div>
+
+<div class="option">
+<input type="checkbox" id="circuitCheck" onchange="calc()">
+<div>専用回路工事</div>
+<input type="number" id="circuitPrice" value="22000" oninput="calc()">
+</div>
+
+<div class="option">
+<input type="checkbox" id="voltageCheck" onchange="calc()">
+<div>電圧切替</div>
+<input type="number" id="voltagePrice" value="3300" oninput="calc()">
+</div>
+
+<div class="option">
+<input type="checkbox" id="holeCheck" onchange="calc()">
+<div>穴あけ工事</div>
+<input type="number" id="holePrice" value="5500" oninput="calc()">
+</div>
+
+<div class="option">
+<input type="checkbox" id="highCheck" onchange="calc()">
+<div>高所作業</div>
+<input type="number" id="highPrice" value="11000" oninput="calc()">
+</div>
+
+<div class="option">
+<input type="checkbox" id="pipeCheck" onchange="calc()">
+<div>配管延長</div>
+<input type="number" id="pipePrice" value="6600" oninput="calc()">
+</div>
+
+<label>その他追加費用</label>
+<input type="number" id="other" value="0" oninput="calc()">
+
+</div>
+
+<div class="card">
+
+<h2>見積結果</h2>
+
+<div class="resultLine">
+<span>本体価格</span>
+<b id="rBody">0円</b>
+</div>
+
+<div class="resultLine">
+<span>標準工事費</span>
+<b>29,500円</b>
+</div>
+
+<div class="resultLine">
+<span>追加工事費</span>
+<b id="rOption">0円</b>
+</div>
+
+<div class="resultLine">
+<span>夏期暑熱対策費</span>
+<b id="rSummer">0円</b>
+</div>
+
+<div class="resultLine">
+<span>値引き</span>
+<b id="rDiscount">0円</b>
+</div>
+
+<div class="totalBox">
+<div class="totalTitle">税込合計</div>
+<div class="totalAmount" id="total">29,500円</div>
+</div>
+
+<button onclick="window.print()">印刷・PDF保存</button>
+
 </div>
 
 </div>
@@ -108,15 +312,44 @@ line-height:1.6;
 const standardFee = 29500;
 
 function yen(num){
-return num.toLocaleString('ja-JP') + '円';
+return Number(num).toLocaleString('ja-JP') + '円';
+}
+
+function checked(checkId, priceId){
+if(document.getElementById(checkId).checked){
+return Number(document.getElementById(priceId).value) || 0;
+}
+return 0;
 }
 
 function calc(){
 
 const month = Number(document.getElementById('month').value);
+
 const body = Number(document.getElementById('body').value) || 0;
-const option = Number(document.getElementById('option').value) || 0;
 const discount = Number(document.getElementById('discount').value) || 0;
+
+const remove = checked('removeCheck','removePrice');
+const recycle = checked('recycleCheck','recyclePrice');
+const cover = checked('coverCheck','coverPrice');
+const circuit = checked('circuitCheck','circuitPrice');
+const voltage = checked('voltageCheck','voltagePrice');
+const hole = checked('holeCheck','holePrice');
+const high = checked('highCheck','highPrice');
+const pipe = checked('pipeCheck','pipePrice');
+
+const other = Number(document.getElementById('other').value) || 0;
+
+const optionTotal =
+remove +
+recycle +
+cover +
+circuit +
+voltage +
+hole +
+high +
+pipe +
+other;
 
 let summer = 0;
 
@@ -127,12 +360,15 @@ summer = 5000;
 const total =
 body +
 standardFee +
-option +
+optionTotal +
 summer -
 discount;
 
-document.getElementById('total').innerText =
-yen(total);
+document.getElementById('rBody').innerText = yen(body);
+document.getElementById('rOption').innerText = yen(optionTotal);
+document.getElementById('rSummer').innerText = yen(summer);
+document.getElementById('rDiscount').innerText = '-' + yen(discount);
+document.getElementById('total').innerText = yen(total);
 
 }
 
